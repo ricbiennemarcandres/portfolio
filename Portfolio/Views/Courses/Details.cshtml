@@ -1,0 +1,47 @@
+@model CourseDetailsViewModel
+@{
+    var course = Model.Course;
+    ViewData["Title"] = course.Code;
+}
+
+<nav class="crumbs" aria-label="Breadcrumb">
+    <a asp-action="Index">Courses</a> / <span>@course.Code</span>
+</nav>
+
+<header class="page-head course-head">
+    <span class="code-tag code-tag-lg">@course.Code</span>
+    <h1>@course.Title</h1>
+    <ul class="meta-list">
+        <li>@course.SchoolYear</li>
+        <li>@course.SemesterName</li>
+        <li>@course.Units units</li>
+        @if (!string.IsNullOrWhiteSpace(course.Instructor))
+        {
+            <li>Instructor: @course.Instructor</li>
+        }
+    </ul>
+    @if (!string.IsNullOrWhiteSpace(course.Description))
+    {
+        <p class="lead-text">@course.Description</p>
+    }
+</header>
+
+<section class="section">
+    <div class="section-head">
+        <h2>Projects in this course <span class="muted">(@Model.Projects.Count)</span></h2>
+    </div>
+
+    @if (Model.Projects.Count == 0)
+    {
+        <p class="empty">No projects in this course yet.</p>
+    }
+    else
+    {
+        <div class="card-grid">
+            @foreach (var project in Model.Projects)
+            {
+                <partial name="_ProjectCard" model="project" />
+            }
+        </div>
+    }
+</section>

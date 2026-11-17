@@ -1,0 +1,81 @@
+@model Project
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<nav class="crumbs" aria-label="Breadcrumb">
+    <a asp-action="Index">Projects</a> /
+    <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId">@Model.CourseCode</a> /
+    <span>@TextHelper.Shorten(Model.Title, 40)</span>
+</nav>
+
+<article class="project-detail">
+    <header class="page-head">
+        <a class="code-tag code-tag-lg" asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId">@Model.CourseCode</a>
+        <h1>@Model.Title</h1>
+        <p class="muted">@Model.CourseTitle</p>
+
+        @if (Model.ToolList.Any())
+        {
+            <ul class="chips">
+                @foreach (var tool in Model.ToolList)
+                {
+                    <li>@tool</li>
+                }
+            </ul>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Model.RepoUrl))
+        {
+            <p><a class="btn-ghost" href="@Model.RepoUrl" target="_blank" rel="noopener">View the source code ↗</a></p>
+        }
+    </header>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Description))
+    {
+        <section class="prose">
+            <p>@Model.Description</p>
+        </section>
+    }
+
+    @* ---- Video: the two lines given in the exam's Annex ---- *@
+    @{
+        // Turn a YouTube link into the address of an embeddable player.
+        var videoId = System.Text.RegularExpressions.Regex.Match(Model.VideoUrl ?? "", @"(?:v=|youtu\.be/|shorts/)([A-Za-z0-9_-]{11})").Groups[1].Value;
+    }
+    @if (videoId != "")
+    {
+        <section class="section">
+            <h2>Demo video</h2>
+            <div class="video-frame">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/@videoId" title="Project demo" allowfullscreen></iframe>
+            </div>
+        </section>
+    }
+
+    <section class="section">
+        <h2>Screenshots <span class="muted">(@Model.Images.Count)</span></h2>
+        @if (Model.Images.Count == 0)
+        {
+            <p class="empty">No screenshots for this project yet.</p>
+        }
+        else
+        {
+            <div class="gallery">
+                @foreach (var image in Model.Images)
+                {
+                    <figure>
+                        <button type="button" class="gallery-item" data-lightbox="@image.ImageUrl" data-caption="@image.Caption"
+                                aria-label="Open image @image.SortOrder">
+                            <img src="@image.ImageUrl" alt="@(image.Caption ?? $"Screenshot {image.SortOrder} of {Model.Title}")" loading="lazy" />
+                        </button>
+                        @if (!string.IsNullOrWhiteSpace(image.Caption))
+                        {
+                            <figcaption>@image.Caption</figcaption>
+                        }
+                    </figure>
+                }
+            </div>
+        }
+    </section>
+</article>

@@ -1,0 +1,32 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Something went wrong";
+}
+
+<section class="status-page">
+    <p class="eyebrow">Error 500</p>
+    <h1>Something went wrong on our side.</h1>
+    <p class="lead-text">
+        The page could not be shown. Nothing you did caused this. Please try again in a moment,
+        or go back to the home page.
+    </p>
+    <div class="actions">
+        <a class="btn-ink" asp-area="" asp-controller="Home" asp-action="Index">Back to home</a>
+        <a class="btn-ghost" href="javascript:history.back()">Go back</a>
+    </div>
+
+    @if (Model.ShowRequestId)
+    {
+        <p class="fine-print mono">Request ID: @Model.RequestId</p>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.Detail))
+    {
+        @* Only shown while developing (IsDevelopment) *@
+        <details class="dev-detail">
+            <summary>Details for the developer</summary>
+            <p class="mono">@Model.Path</p>
+            <p class="mono">@Model.Detail</p>
+        </details>
+    }
+</section>

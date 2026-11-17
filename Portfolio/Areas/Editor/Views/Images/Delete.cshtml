@@ -1,0 +1,28 @@
+@model ProjectImage
+@{
+    ViewData["Title"] = "Delete image";
+}
+
+<nav class="crumbs">
+    <a asp-controller="Projects" asp-action="Index">Projects</a> /
+    <a asp-action="Index" asp-route-projectId="@Model.ProjectId">@TextHelper.Shorten(Model.ProjectTitle, 40)</a> /
+    <span>Delete image</span>
+</nav>
+
+<section class="confirm-card">
+    <h1>Delete this image?</h1>
+    <div asp-validation-summary="ModelOnly" class="form-alert"></div>
+
+    <img class="confirm-image" src="@Model.ImageUrl" alt="@(Model.Caption ?? "")" />
+    <dl class="detail-list">
+        <dt>Project</dt><dd>@Model.ProjectTitle</dd>
+        <dt>Order</dt><dd>#@Model.SortOrder</dd>
+        <dt>Caption</dt><dd>@(Model.Caption ?? "—")</dd>
+        <dt>URL</dt><dd class="mono url-line">@Model.ImageUrl</dd>
+    </dl>
+
+    <form asp-action="Delete" asp-route-id="@Model.ImageId" method="post" class="actions">
+        <button type="submit" class="btn-danger-ink">Delete image</button>
+        <a class="btn-ghost" asp-action="Index" asp-route-projectId="@Model.ProjectId">Cancel</a>
+    </form>
+</section>

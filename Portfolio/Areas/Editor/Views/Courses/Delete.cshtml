@@ -1,0 +1,33 @@
+@model Course
+@{
+    ViewData["Title"] = $"Delete {Model.Code}";
+}
+
+<nav class="crumbs"><a asp-action="Index">Courses</a> / <span>Delete @Model.Code</span></nav>
+
+<section class="confirm-card">
+    <h1>Delete this course?</h1>
+
+    @* A refusal from the database (23503) appears here *@
+    <div asp-validation-summary="ModelOnly" class="form-alert"></div>
+
+    <dl class="detail-list">
+        <dt>Code</dt><dd><span class="code-tag">@Model.Code</span></dd>
+        <dt>Title</dt><dd>@Model.Title</dd>
+        <dt>Term</dt><dd>@Model.SchoolYear · @Model.SemesterName</dd>
+        <dt>Projects</dt><dd>@Model.ProjectCount</dd>
+    </dl>
+
+    @if (Model.ProjectCount > 0)
+    {
+        <p class="note">
+            This course has @Model.ProjectCount project(s). Its foreign key is <span class="mono">ON DELETE RESTRICT</span>,
+            so the database will refuse to delete it until its projects are deleted or moved.
+        </p>
+    }
+
+    <form asp-action="Delete" asp-route-id="@Model.CourseId" method="post" class="actions">
+        <button type="submit" class="btn-danger-ink">Delete course</button>
+        <a class="btn-ghost" asp-action="Index">Cancel</a>
+    </form>
+</section>

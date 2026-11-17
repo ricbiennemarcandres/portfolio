@@ -1,0 +1,28 @@
+@model ProjectImage
+@{
+    ViewData["Title"] = "Add an image";
+}
+
+<nav class="crumbs">
+    <a asp-controller="Projects" asp-action="Index">Projects</a> /
+    <a asp-action="Index" asp-route-projectId="@Model.ProjectId">@TextHelper.Shorten(Model.ProjectTitle, 40)</a> /
+    <span>Add image</span>
+</nav>
+
+<header class="page-head">
+    <h1>Add an image</h1>
+    <p class="muted">to “@Model.ProjectTitle”</p>
+</header>
+
+<form asp-action="Create" method="post" class="ed-form">
+    <partial name="_ImageForm" model="Model" />
+    <div class="actions">
+        <button type="submit" class="btn-ink">Save image</button>
+        <a class="btn-ghost" asp-action="Index" asp-route-projectId="@Model.ProjectId">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/validation.js" asp-append-version="true"></script>
+}

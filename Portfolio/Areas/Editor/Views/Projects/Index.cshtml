@@ -1,0 +1,68 @@
+@model ProjectListViewModel
+@{
+    ViewData["Title"] = "Manage projects";
+}
+
+<header class="page-head head-row">
+    <div>
+        <p class="eyebrow">Editor</p>
+        <h1>Projects</h1>
+    </div>
+    <a class="btn-ink" asp-action="Create" asp-route-courseId="@Model.CourseId">+ Add a project</a>
+</header>
+
+<form class="search-bar" asp-action="Index" method="get">
+    <select name="courseId" class="form-select" aria-label="Course" onchange="this.form.submit()">
+        <option value="">All courses</option>
+        @foreach (var c in Model.Courses)
+        {
+            if (Model.CourseId == c.CourseId)
+            {
+                <option value="@c.CourseId" selected>@c.Code — @c.Title</option>
+            }
+            else
+            {
+                <option value="@c.CourseId">@c.Code — @c.Title</option>
+            }
+        }
+    </select>
+    <input type="search" name="q" value="@Model.Search" placeholder="Search…" aria-label="Search projects" />
+    <button type="submit" class="btn-ghost">Filter</button>
+</form>
+
+@if (Model.Projects.Count == 0)
+{
+    <p class="empty">No projects here. <a asp-action="Create" asp-route-courseId="@Model.CourseId">Add one.</a></p>
+}
+else
+{
+    <div class="table-wrap">
+        <table class="ed-table">
+            <thead>
+                <tr><th></th><th>Title</th><th>Course</th><th>Video</th><th>Images</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model.Projects)
+                {
+                    <tr>
+                        <td class="thumb-cell">
+                            @if (p.CoverImageUrl is not null)
+                            {
+                                <img src="@p.CoverImageUrl" alt="" loading="lazy" />
+                            }
+                        </td>
+                        <td>@p.Title</td>
+                        <td><span class="code-tag">@p.CourseCode</span></td>
+                        <td>@(string.IsNullOrEmpty(p.VideoUrl) ? "—" : "✓")</td>
+                        <td>@p.ImageCount</td>
+                        <td class="row-actions">
+                            <a asp-action="Edit" asp-route-id="@p.ProjectId">Edit</a>
+                            <a asp-controller="Images" asp-action="Index" asp-route-projectId="@p.ProjectId">Images</a>
+                            <a class="danger" asp-action="Delete" asp-route-id="@p.ProjectId">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

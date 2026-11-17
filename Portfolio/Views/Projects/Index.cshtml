@@ -1,0 +1,49 @@
+@model ProjectListViewModel
+@{
+    ViewData["Title"] = "Projects";
+}
+
+<header class="page-head">
+    <p class="eyebrow">Work</p>
+    <h1>Projects</h1>
+
+    <form class="search-bar" asp-action="Index" method="get" role="search">
+        <input type="search" name="q" value="@Model.Search" placeholder="Search titles, tools, courses…" aria-label="Search projects" />
+        @if (Model.CourseId is not null)
+        {
+            <input type="hidden" name="courseId" value="@Model.CourseId" />
+        }
+        <button type="submit" class="btn-ink">Search</button>
+    </form>
+
+    <nav class="filter-chips" aria-label="Filter by course">
+        <a class="@(Model.CourseId is null ? "on" : "")" asp-action="Index" asp-route-q="@Model.Search">All</a>
+        @foreach (var c in Model.Courses.Where(c => c.ProjectCount > 0))
+        {
+            <a class="@(Model.CourseId == c.CourseId ? "on" : "")"
+               asp-action="Index" asp-route-courseId="@c.CourseId" asp-route-q="@Model.Search">@c.Code</a>
+        }
+    </nav>
+</header>
+
+<p class="result-count mono">
+    @Model.Projects.Count @(Model.Projects.Count == 1 ? "result" : "results")
+    @if (!string.IsNullOrWhiteSpace(Model.Search))
+    {
+        <text>for “@Model.Search”</text>
+    }
+</p>
+
+@if (Model.Projects.Count == 0)
+{
+    <p class="empty">No project matches. Try another word or <a asp-action="Index">show all projects</a>.</p>
+}
+else
+{
+    <div class="card-grid">
+        @foreach (var project in Model.Projects)
+        {
+            <partial name="_ProjectCard" model="project" />
+        }
+    </div>
+}

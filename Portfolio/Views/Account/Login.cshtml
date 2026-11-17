@@ -1,0 +1,29 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Sign in";
+}
+
+<section class="login-card">
+    <p class="eyebrow">Editor</p>
+    <h1>Sign in to edit</h1>
+    <p class="muted">Only the owner of this portfolio can add, edit or delete.</p>
+
+    <form asp-action="Login" method="post" novalidate>
+        <div asp-validation-summary="ModelOnly" class="form-alert"></div>
+        <input type="hidden" asp-for="ReturnUrl" />
+
+        <div class="field">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" class="form-control" autocomplete="current-password" autofocus />
+            <span asp-validation-for="Password" class="field-error"></span>
+        </div>
+
+        <button type="submit" class="btn-ink w-100">Sign in</button>
+    </form>
+
+    <p class="fine-print"><a asp-controller="Home" asp-action="Index">← Back to the portfolio</a></p>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

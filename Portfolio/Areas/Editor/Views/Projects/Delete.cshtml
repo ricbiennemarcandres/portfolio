@@ -1,0 +1,30 @@
+@model Project
+@{
+    ViewData["Title"] = "Delete project";
+}
+
+<nav class="crumbs"><a asp-action="Index">Projects</a> / <span>Delete</span></nav>
+
+<section class="confirm-card">
+    <h1>Delete this project?</h1>
+    <div asp-validation-summary="ModelOnly" class="form-alert"></div>
+
+    <dl class="detail-list">
+        <dt>Title</dt><dd>@Model.Title</dd>
+        <dt>Course</dt><dd><span class="code-tag">@Model.CourseCode</span> @Model.CourseTitle</dd>
+        <dt>Images</dt><dd>@Model.Images.Count</dd>
+    </dl>
+
+    @if (Model.Images.Count > 0)
+    {
+        <p class="note">
+            Its @Model.Images.Count image(s) will be deleted too
+            (<span class="mono">fk_project_image_project ON DELETE CASCADE</span>).
+        </p>
+    }
+
+    <form asp-action="Delete" asp-route-id="@Model.ProjectId" method="post" class="actions">
+        <button type="submit" class="btn-danger-ink">Delete project</button>
+        <a class="btn-ghost" asp-action="Index">Cancel</a>
+    </form>
+</section>

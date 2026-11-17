@@ -1,0 +1,65 @@
+@model ProjectFormViewModel
+
+@* Shared by Create and Edit. Saving runs ONE transaction:
+   the project row and every image URL below, or nothing at all. *@
+
+<div asp-validation-summary="ModelOnly" class="form-alert"></div>
+<input type="hidden" asp-for="ProjectId" />
+
+<div class="form-grid">
+    <div class="field span-3">
+        <label asp-for="CourseId"></label>
+        <select asp-for="CourseId" asp-items="Model.Courses" class="form-select">
+            <option value="0">— choose a course —</option>
+        </select>
+        @if (!Model.Courses.Any())
+        {
+            <small class="hint">There are no courses yet. <a asp-controller="Courses" asp-action="Create">Add a course first.</a></small>
+        }
+        <span asp-validation-for="CourseId" class="field-error"></span>
+    </div>
+
+    <div class="field span-3">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="field-error"></span>
+    </div>
+
+    <div class="field span-3">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Description" class="field-error"></span>
+    </div>
+
+    <div class="field span-3">
+        <label asp-for="Tools"></label>
+        <input asp-for="Tools" class="form-control" placeholder="C#, ASP.NET Core MVC, Supabase" />
+        <small class="hint">Separate with commas. Each one shows as a chip.</small>
+        <span asp-validation-for="Tools" class="field-error"></span>
+    </div>
+
+    <div class="field span-2">
+        <label asp-for="VideoUrl"></label>
+        <input asp-for="VideoUrl" class="form-control mono" placeholder="https://www.youtube.com/watch?v=…" />
+        <span asp-validation-for="VideoUrl" class="field-error"></span>
+    </div>
+
+    <div class="field">
+        <label asp-for="RepoUrl"></label>
+        <input asp-for="RepoUrl" class="form-control mono" placeholder="https://github.com/…" />
+        <span asp-validation-for="RepoUrl" class="field-error"></span>
+    </div>
+
+    <div class="field span-3">
+        <label asp-for="ImageUrls"></label>
+        <textarea asp-for="ImageUrls" class="form-control mono" rows="6" spellcheck="false" wrap="off"
+                  data-preview="#image-preview"
+                  placeholder="https://xxxx.supabase.co/storage/v1/object/public/portfolio/screen1.png&#10;https://raw.githubusercontent.com/you/portfolio/main/wwwroot/img/screen2.jpg"></textarea>
+        <small class="hint">
+            One public link per line, ending in .png, .jpg, .jpeg, .gif, .webp or .svg. The first one is the cover.
+            Upload to a public Supabase Storage bucket or commit to your repository. Google Drive, Facebook and OneDrive links do not display.
+        </small>
+        <span asp-validation-for="ImageUrls" class="field-error"></span>
+        <div id="image-preview" class="preview-strip" aria-live="polite"></div>
+    </div>
+</div>

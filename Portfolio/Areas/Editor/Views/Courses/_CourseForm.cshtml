@@ -1,0 +1,57 @@
+@model Course
+
+@* Shared by Create and Edit. Rules come from the attributes on Models/Course.cs
+   (checked in the browser by jQuery Validation, and again on the server). *@
+
+<div asp-validation-summary="ModelOnly" class="form-alert"></div>
+<input type="hidden" asp-for="CourseId" />
+
+<div class="form-grid">
+    <div class="field">
+        <label asp-for="Code"></label>
+        <input asp-for="Code" class="form-control mono" data-uppercase placeholder="DBMWEB1" />
+        <small class="hint">Capital letters then digits: DBMWEB1, IT 101, CC-102. Must be unique.</small>
+        <span asp-validation-for="Code" class="field-error"></span>
+    </div>
+
+    <div class="field span-2">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" placeholder="Database Management and Web Systems" />
+        <span asp-validation-for="Title" class="field-error"></span>
+    </div>
+
+    <div class="field">
+        <label asp-for="SchoolYear"></label>
+        <input asp-for="SchoolYear" class="form-control mono" placeholder="2026-2027" />
+        <small class="hint">Like 2026-2027. The second year must be the next year.</small>
+        <span asp-validation-for="SchoolYear" class="field-error"></span>
+    </div>
+
+    <div class="field">
+        <label asp-for="Semester"></label>
+        <select asp-for="Semester" class="form-select">
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">Summer</option>
+        </select>
+        <span asp-validation-for="Semester" class="field-error"></span>
+    </div>
+
+    <div class="field">
+        <label asp-for="Units"></label>
+        <input asp-for="Units" class="form-control" type="number" min="1" max="6" />
+        <span asp-validation-for="Units" class="field-error"></span>
+    </div>
+
+    <div class="field span-3">
+        <label asp-for="Instructor"></label>
+        <input asp-for="Instructor" class="form-control" />
+        <span asp-validation-for="Instructor" class="field-error"></span>
+    </div>
+
+    <div class="field span-3">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Description" class="field-error"></span>
+    </div>
+</div>

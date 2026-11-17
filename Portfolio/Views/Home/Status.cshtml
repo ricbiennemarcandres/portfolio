@@ -1,0 +1,26 @@
+@model int
+@{
+    var notFound = Model == 404;
+    ViewData["Title"] = notFound ? "Not found" : $"Error {Model}";
+}
+
+<section class="status-page">
+    <p class="eyebrow">Error @Model</p>
+    @if (notFound)
+    {
+        <h1>This page is not in the catalog.</h1>
+        <p class="lead-text">
+            The course, project or image you asked for does not exist. It may have been deleted,
+            or the link has a wrong number in it.
+        </p>
+    }
+    else
+    {
+        <h1>That request could not be completed.</h1>
+        <p class="lead-text">Please go back and try again.</p>
+    }
+    <div class="actions">
+        <a class="btn-ink" asp-area="" asp-controller="Projects" asp-action="Index">Browse projects</a>
+        <a class="btn-ghost" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+    </div>
+</section>

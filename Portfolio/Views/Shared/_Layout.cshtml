@@ -1,0 +1,114 @@
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    var area = ViewContext.RouteData.Values["area"] as string;
+    var isEditor = string.Equals(area, "Editor", StringComparison.OrdinalIgnoreCase);
+    var controller = ViewContext.RouteData.Values["controller"] as string ?? "Home";
+
+    // The switch link goes to the same kind of page on the other side.
+    var switchController = controller switch
+    {
+        "Courses" => "Courses",
+        "Projects" or "Images" => "Projects",
+        _ => "Home"
+    };
+
+    var owner = Configuration["Portfolio:OwnerName"] ?? "My Portfolio";
+    var signedIn = User.Identity?.IsAuthenticated == true;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] · @owner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="@(isEditor ? "mode-editor" : "mode-viewer")">
+
+    @if (isEditor)
+    {
+        <div class="editor-band">
+            <span>EDITOR MODE</span> · changes here are saved straight to the database
+        </div>
+    }
+
+    <header class="site-header">
+        <nav class="container nav-bar">
+            <a class="brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <span class="brand-mark" aria-hidden="true"></span>@owner
+            </a>
+
+            <ul class="nav-links">
+                @if (isEditor)
+                {
+                    <li><a class="@(controller == "Home" ? "active" : "")" asp-area="Editor" asp-controller="Home" asp-action="Index">Dashboard</a></li>
+                    <li><a class="@(controller == "Courses" ? "active" : "")" asp-area="Editor" asp-controller="Courses" asp-action="Index">Courses</a></li>
+                    <li><a class="@(controller is "Projects" or "Images" ? "active" : "")" asp-area="Editor" asp-controller="Projects" asp-action="Index">Projects</a></li>
+                }
+                else
+                {
+                    <li><a class="@(controller == "Home" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li><a class="@(controller == "Courses" ? "active" : "")" asp-area="" asp-controller="Courses" asp-action="Index">Courses</a></li>
+                    <li><a class="@(controller == "Projects" ? "active" : "")" asp-area="" asp-controller="Projects" asp-action="Index">Projects</a></li>
+                }
+            </ul>
+
+            <div class="nav-tools">
+                @if (!isEditor)
+                {
+                    <form class="nav-search" asp-area="" asp-controller="Projects" asp-action="Index" method="get" role="search">
+                        <input type="search" name="q" placeholder="Search projects…" aria-label="Search projects" />
+                    </form>
+                }
+
+                @* The link that switches between the viewer and the editor *@
+                @if (isEditor)
+                {
+                    <a class="mode-switch to-viewer" asp-area="" asp-controller="@switchController" asp-action="Index">View as visitor</a>
+                }
+                else
+                {
+                    <a class="mode-switch to-editor" asp-area="Editor" asp-controller="@switchController" asp-action="Index">Editor</a>
+                }
+
+                @if (signedIn)
+                {
+                    <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                        <button type="submit" class="link-button">Sign out</button>
+                    </form>
+                }
+            </div>
+        </nav>
+    </header>
+
+    <main class="container page">
+        @if (TempData["Success"] is string success)
+        {
+            <div class="flash" role="status">@success</div>
+        }
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <span>© @DateTime.Now.Year @owner</span>
+            <span class="mono">ASP.NET Core MVC · Supabase PostgreSQL</span>
+        </div>
+    </footer>
+
+    <dialog id="lightbox" class="lightbox" aria-label="Image viewer">
+        <form method="dialog"><button class="lightbox-close" aria-label="Close">×</button></form>
+        <img alt="" />
+        <p class="lightbox-caption"></p>
+    </dialog>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

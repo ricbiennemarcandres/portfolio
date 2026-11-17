@@ -1,0 +1,46 @@
+@model Project
+@{
+    ViewData["Title"] = "Images";
+}
+
+<nav class="crumbs">
+    <a asp-controller="Projects" asp-action="Index">Projects</a> /
+    <a asp-controller="Projects" asp-action="Edit" asp-route-id="@Model.ProjectId">@TextHelper.Shorten(Model.Title, 40)</a> /
+    <span>Images</span>
+</nav>
+
+<header class="page-head head-row">
+    <div>
+        <p class="eyebrow">Editor · <span class="code-tag">@Model.CourseCode</span></p>
+        <h1>Images of “@Model.Title”</h1>
+    </div>
+    <div class="actions">
+        <a class="btn-ink" asp-action="Create" asp-route-projectId="@Model.ProjectId">+ Add an image</a>
+        <a class="btn-ghost" asp-controller="Projects" asp-action="Edit" asp-route-id="@Model.ProjectId">Edit all URLs at once</a>
+    </div>
+</header>
+
+@if (Model.Images.Count == 0)
+{
+    <p class="empty">This project has no images yet.</p>
+}
+else
+{
+    <div class="image-admin-grid">
+        @foreach (var image in Model.Images)
+        {
+            <figure class="image-admin">
+                <img src="@image.ImageUrl" alt="@(image.Caption ?? "")" loading="lazy" />
+                <figcaption>
+                    <span class="mono">#@image.SortOrder</span>
+                    @(string.IsNullOrWhiteSpace(image.Caption) ? "No caption" : image.Caption)
+                </figcaption>
+                <p class="mono url-line" title="@image.ImageUrl">@TextHelper.Shorten(image.ImageUrl, 60)</p>
+                <div class="row-actions">
+                    <a asp-action="Edit" asp-route-id="@image.ImageId">Edit</a>
+                    <a class="danger" asp-action="Delete" asp-route-id="@image.ImageId">Delete</a>
+                </div>
+            </figure>
+        }
+    </div>
+}

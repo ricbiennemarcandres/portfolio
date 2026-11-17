@@ -1,0 +1,30 @@
+@model ProjectFormViewModel
+@{
+    ViewData["Title"] = "Edit project";
+}
+
+<nav class="crumbs"><a asp-action="Index">Projects</a> / <span>Edit</span></nav>
+
+<header class="page-head head-row">
+    <div>
+        <h1>Edit project</h1>
+        <p class="muted">Saving replaces this project's images with the list below, in one transaction.</p>
+    </div>
+    <div class="actions">
+        <a class="btn-ghost" asp-controller="Images" asp-action="Index" asp-route-projectId="@Model.ProjectId">Images one by one</a>
+        <a class="btn-ghost" asp-area="" asp-controller="Projects" asp-action="Details" asp-route-id="@Model.ProjectId">View page</a>
+    </div>
+</header>
+
+<form asp-action="Edit" asp-route-id="@Model.ProjectId" method="post" class="ed-form">
+    <partial name="_ProjectForm" model="Model" />
+    <div class="actions">
+        <button type="submit" class="btn-ink">Save changes</button>
+        <a class="btn-ghost" asp-action="Index">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/validation.js" asp-append-version="true"></script>
+}

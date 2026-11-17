@@ -1,0 +1,20 @@
+@model Course
+
+@* Styled like a library catalog card *@
+<article class="catalog-card">
+    <div class="catalog-top">
+        <span class="code-tag">@Model.Code</span>
+        <span class="catalog-meta">@Model.SchoolYear · @Model.SemesterName</span>
+    </div>
+    <h3>
+        <a asp-area="" asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId">@Model.Title</a>
+    </h3>
+    @if (!string.IsNullOrWhiteSpace(Model.Description))
+    {
+        <p>@TextHelper.Shorten(Model.Description, 120)</p>
+    }
+    <div class="catalog-foot">
+        <span>@Model.Units units</span>
+        <span>@(Model.ProjectCount == 1 ? "1 project" : $"{Model.ProjectCount} projects")</span>
+    </div>
+</article>

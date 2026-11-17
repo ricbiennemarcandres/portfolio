@@ -1,0 +1,34 @@
+@model List<Course>
+@{
+    ViewData["Title"] = "Courses";
+    var search = ViewData["Search"] as string;
+}
+
+<header class="page-head">
+    <p class="eyebrow">Catalog</p>
+    <h1>Courses I have taken</h1>
+    <form class="search-bar" asp-action="Index" method="get" role="search">
+        <input type="search" name="q" value="@search" placeholder="Search by code or title…" aria-label="Search courses" />
+        <button type="submit" class="btn-ink">Search</button>
+        @if (!string.IsNullOrWhiteSpace(search))
+        {
+            <a class="btn-ghost" asp-action="Index">Clear</a>
+        }
+    </form>
+</header>
+
+@if (Model.Count == 0)
+{
+    <p class="empty">
+        @(string.IsNullOrWhiteSpace(search) ? "No courses yet." : $"No course matches “{search}”.")
+    </p>
+}
+else
+{
+    <div class="card-grid">
+        @foreach (var course in Model)
+        {
+            <partial name="_CourseCard" model="course" />
+        }
+    </div>
+}

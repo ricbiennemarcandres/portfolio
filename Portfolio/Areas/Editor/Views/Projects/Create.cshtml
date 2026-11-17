@@ -1,0 +1,24 @@
+@model ProjectFormViewModel
+@{
+    ViewData["Title"] = "Add a project";
+}
+
+<nav class="crumbs"><a asp-action="Index">Projects</a> / <span>Add</span></nav>
+
+<header class="page-head">
+    <h1>Add a project</h1>
+    <p class="muted">The project and its images are saved in one transaction: all of it, or none of it.</p>
+</header>
+
+<form asp-action="Create" method="post" class="ed-form">
+    <partial name="_ProjectForm" model="Model" />
+    <div class="actions">
+        <button type="submit" class="btn-ink">Save project</button>
+        <a class="btn-ghost" asp-action="Index">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/validation.js" asp-append-version="true"></script>
+}

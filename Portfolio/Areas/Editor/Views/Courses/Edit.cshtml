@@ -1,0 +1,23 @@
+@model Course
+@{
+    ViewData["Title"] = $"Edit {Model.Code}";
+}
+
+<nav class="crumbs"><a asp-action="Index">Courses</a> / <span>Edit @Model.Code</span></nav>
+
+<header class="page-head">
+    <h1>Edit course</h1>
+</header>
+
+<form asp-action="Edit" asp-route-id="@Model.CourseId" method="post" class="ed-form">
+    <partial name="_CourseForm" model="Model" />
+    <div class="actions">
+        <button type="submit" class="btn-ink">Save changes</button>
+        <a class="btn-ghost" asp-action="Index">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/validation.js" asp-append-version="true"></script>
+}

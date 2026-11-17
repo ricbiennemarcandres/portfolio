@@ -1,0 +1,23 @@
+@model Course
+@{
+    ViewData["Title"] = "Add a course";
+}
+
+<nav class="crumbs"><a asp-action="Index">Courses</a> / <span>Add</span></nav>
+
+<header class="page-head">
+    <h1>Add a course</h1>
+</header>
+
+<form asp-action="Create" method="post" class="ed-form">
+    <partial name="_CourseForm" model="Model" />
+    <div class="actions">
+        <button type="submit" class="btn-ink">Save course</button>
+        <a class="btn-ghost" asp-action="Index">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/validation.js" asp-append-version="true"></script>
+}

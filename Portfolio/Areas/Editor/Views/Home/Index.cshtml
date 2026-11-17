@@ -1,0 +1,53 @@
+@model HomeViewModel
+@{
+    ViewData["Title"] = "Editor dashboard";
+}
+
+<header class="page-head">
+    <p class="eyebrow">Editor</p>
+    <h1>Dashboard</h1>
+</header>
+
+<dl class="stat-row stat-tiles">
+    <div><dt>Courses</dt><dd>@Model.Courses.Count</dd><a asp-controller="Courses" asp-action="Index">Manage →</a></div>
+    <div><dt>Projects</dt><dd>@Model.ProjectCount</dd><a asp-controller="Projects" asp-action="Index">Manage →</a></div>
+    <div><dt>Images</dt><dd>@Model.ImageCount</dd><a asp-controller="Projects" asp-action="Index">By project →</a></div>
+</dl>
+
+<div class="actions">
+    <a class="btn-ink" asp-controller="Courses" asp-action="Create">+ Add a course</a>
+    <a class="btn-ink" asp-controller="Projects" asp-action="Create">+ Add a project</a>
+</div>
+
+<section class="section">
+    <div class="section-head">
+        <h2>Recently added projects</h2>
+    </div>
+
+    @if (Model.LatestProjects.Count == 0)
+    {
+        <p class="empty">No projects yet. <a asp-controller="Projects" asp-action="Create">Add the first one.</a></p>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table class="ed-table">
+                <thead><tr><th>Project</th><th>Course</th><th>Images</th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var p in Model.LatestProjects)
+                    {
+                        <tr>
+                            <td>@p.Title</td>
+                            <td><span class="code-tag">@p.CourseCode</span></td>
+                            <td>@p.ImageCount</td>
+                            <td class="row-actions">
+                                <a asp-controller="Projects" asp-action="Edit" asp-route-id="@p.ProjectId">Edit</a>
+                                <a asp-controller="Images" asp-action="Index" asp-route-projectId="@p.ProjectId">Images</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

@@ -1,0 +1,93 @@
+@model HomeViewModel
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    ViewData["Title"] = "Home";
+    var owner = Configuration["Portfolio:OwnerName"] ?? "My Portfolio";
+    var headline = Configuration["Portfolio:Headline"] ?? "";
+    var about = Configuration["Portfolio:About"] ?? "";
+
+    // Group courses into terms for the timeline: "2026-2027 · 1st Semester"
+    var terms = Model.Courses
+        .GroupBy(c => new { c.SchoolYear, c.Semester, c.SemesterName })
+        .OrderByDescending(g => g.Key.SchoolYear)
+        .ThenByDescending(g => g.Key.Semester);
+}
+
+<section class="hero">
+    <p class="eyebrow">Portfolio of coursework</p>
+    <h1>@owner</h1>
+    @if (!string.IsNullOrWhiteSpace(headline))
+    {
+        <p class="hero-headline">@headline</p>
+    }
+    @if (!string.IsNullOrWhiteSpace(about))
+    {
+        <p class="lead-text">@about</p>
+    }
+
+    <dl class="stat-row">
+        <div><dt>Courses</dt><dd>@Model.Courses.Count</dd></div>
+        <div><dt>Projects</dt><dd>@Model.ProjectCount</dd></div>
+        <div><dt>Screenshots</dt><dd>@Model.ImageCount</dd></div>
+    </dl>
+
+    <div class="actions">
+        <a class="btn-ink" asp-controller="Projects" asp-action="Index">See all projects</a>
+        <a class="btn-ghost" asp-controller="Courses" asp-action="Index">Browse courses</a>
+    </div>
+</section>
+
+<section class="section">
+    <div class="section-head">
+        <h2>Latest projects</h2>
+        <a asp-controller="Projects" asp-action="Index">All projects →</a>
+    </div>
+
+    @if (Model.LatestProjects.Count == 0)
+    {
+        <p class="empty">No projects yet.</p>
+    }
+    else
+    {
+        <div class="card-grid">
+            @foreach (var project in Model.LatestProjects)
+            {
+                <partial name="_ProjectCard" model="project" />
+            }
+        </div>
+    }
+</section>
+
+<section class="section">
+    <div class="section-head">
+        <h2>Course timeline</h2>
+        <a asp-controller="Courses" asp-action="Index">All courses →</a>
+    </div>
+
+    @if (!terms.Any())
+    {
+        <p class="empty">No courses yet.</p>
+    }
+    else
+    {
+        <ol class="timeline">
+            @foreach (var term in terms)
+            {
+                <li>
+                    <p class="timeline-term mono">@term.Key.SchoolYear · @term.Key.SemesterName</p>
+                    <ul>
+                        @foreach (var course in term.OrderBy(c => c.Code))
+                        {
+                            <li>
+                                <a asp-controller="Courses" asp-action="Details" asp-route-id="@course.CourseId">
+                                    <span class="code-tag">@course.Code</span> @course.Title
+                                </a>
+                                <span class="muted">· @course.ProjectCount @(course.ProjectCount == 1 ? "project" : "projects")</span>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+        </ol>
+    }
+</section>
