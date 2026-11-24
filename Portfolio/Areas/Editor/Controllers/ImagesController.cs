@@ -68,6 +68,14 @@ public class ImagesController : Controller
         {
             // e.g. 23505 uq_project_image_url, 23503 fk_project_image_project
             ModelState.AddModelError(DbErrors.FieldFor(ex), DbErrors.Message(ex));
+
+            if (ex.SqlState == DbErrors.ForeignKeyViolation)
+            {
+                // The project was deleted meanwhile: show the refusal on the form, not a 404.
+                image.ProjectTitle = "(deleted project)";
+                return View(image);
+            }
+
             return await RedisplayAsync(image);
         }
     }

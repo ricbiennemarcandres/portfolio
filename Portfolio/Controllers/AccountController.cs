@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using portfolio.ViewModels;
 
 namespace portfolio.Controllers;
@@ -34,6 +35,7 @@ public class AccountController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [EnableRateLimiting("login")] // 5 attempts per minute per address (Program.cs)
     public async Task<IActionResult> Login(LoginViewModel model)
     {
         if (!ModelState.IsValid)
